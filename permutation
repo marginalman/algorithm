@@ -1,0 +1,62 @@
+#include <cstdio>
+#include <algorithm>
+#include <iostream>
+using namespace std;
+
+/*最简单的版本，但是可能会产生重复的序列*/
+template<class T>
+void ToPermu(T A[], int l, int r) {
+	if (l == r) {
+		for (int i=0; i<=r; i++)
+			cout << A[i] << " ";
+		cout << endl;
+		return;
+	} for (int i=l; i<=r; i++) {
+		swap(A[l], A[i]);
+		GenePermu(A, l+1, r);
+		swap(A[l], A[i]);
+	}
+}
+
+template<class T>
+bool Check(T A[], int i, int j) {
+	for (int t=i; t<j; t++)
+		if (A[t] == A[j])
+			return false;
+	return true;
+}
+
+/*全排列的升级版，可以去除掉重复序列的情况*/
+template<class T>
+void ToPermuPro(T A[], int l, int r) {
+	if (l == r) {
+		for (int k=0; k<=r; k++)
+			cout << A[k] << " ";
+		cout << endl;
+		return;
+	} for (int k=l; k<=r; k++) {
+		if (Check(A, l, k)) 
+			continue;
+		swap(A[k], A[l]);
+		GenePermuPro(A, l+1, r);
+		swap(A[k], A[l]);
+	}
+}
+
+/*判断是否还有下一个字典序*/
+bool NextPermutation(int A[], int n) {
+	int j = n - 2;
+	while (A[j] >= A[j+1] && j>=0) 
+		--j;
+	if (j < 0) 
+		return false;
+	int i = n - 1;
+	while (A[j] >= A[i]) 
+		--i;
+	swap(A[j], A[i]);
+	int l = j + 1;
+	int r = n - 1;
+	while (l < r) 
+		swap(A[l++], A[r--]);
+	return true;
+}
